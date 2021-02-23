@@ -9,28 +9,24 @@ import {
 } from '@loopback/rest';
 import {NomenclatureSearch} from '../models';
 import {NomenclatureSearchRepository} from '../repositories';
+import {
+  NomenclatureSearchScientificRequest,
+  NomenclatureSearchResponse,
+} from './domain/nomenclature-search.domain';
 
-interface NomenclatureSearchScientificRequest {
-  genus?: string;
-  species?: string;
-  infraspecific?: string;
-  status?: string;
-  page?: number;
-  rowsPerPage?: number;
-}
-interface NomenclatureSearchResponse {
-  data: NomenclatureSearch[];
-  pagination: {
-    page?: number,
-    rowsPerPage?: number,
-    totalPages: number,
-    totalRecords: number,
-  };
-}
+const nomenclatureSearchProperties = NomenclatureSearch.definition.properties;
+const searchInfraspecificFields = Object.keys(
+  nomenclatureSearchProperties,
+).filter((key) => nomenclatureSearchProperties[key].infraspecific);
+const searchDefaultOrder = Object.keys(
+  nomenclatureSearchProperties,
+).filter((key) => nomenclatureSearchProperties[key].defaultOrder);
 
-const nomenclatureSearchInfraspecificFields = Object.keys(
-  NomenclatureSearch.definition.properties,
-).filter((key) => NomenclatureSearch.definition.properties[key].infraspecific);
+searchDefaultOrder.sort((a, b) => (
+  nomenclatureSearchProperties[a].defaultOrder
+  > nomenclatureSearchProperties[b].defaultOrder
+  ? 1 : -1
+));
 
 export class NomenclatureSearchController {
   constructor(
@@ -141,7 +137,7 @@ export class NomenclatureSearchController {
       ands.push(speciesOr);
     }
     if (infraspecific) {
-      const infraOrs = nomenclatureSearchInfraspecificFields.map((field) => ({
+      const infraOrs = searchInfraspecificFields.map((field) => ({
         [field]: {like: `%${infraspecific}%`},
       }));
       ands.push({or: infraOrs});
@@ -159,7 +155,7 @@ export class NomenclatureSearchController {
       fb.offset((page - 1) * rowsPerPage).limit(rowsPerPage);
     }
 
-    const filter = fb.build();
+    const filter = fb.order(searchDefaultOrder).build();
 
     const data = await this.nomenclatureSearchRepository.find(filter);
     const countResult = await this.nomenclatureSearchRepository.count(where);

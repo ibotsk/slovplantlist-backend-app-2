@@ -7,6 +7,7 @@ export class NomenclatureSearch extends Entity {
   @property({
     type: 'number',
     id: true,
+    defaultOrder: 19,
   })
   id?: number;
 
@@ -23,47 +24,55 @@ export class NomenclatureSearch extends Entity {
 
   @property({
     type: 'string',
+    defaultOrder: 1,
   })
   genus?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 2,
   })
   species?: string;
 
   @property({
     type: 'string',
     infraspecific: true,
+    defaultOrder: 3,
   })
   subsp?: string;
 
   @property({
     type: 'string',
     infraspecific: true,
+    defaultOrder: 4,
   })
   var?: string;
 
   @property({
     type: 'string',
     infraspecific: true,
+    defaultOrder: 5,
   })
   subvar?: string;
 
   @property({
     type: 'string',
     infraspecific: true,
+    defaultOrder: 6,
   })
   forma?: string;
 
   @property({
     type: 'string',
     infraspecific: true,
+    defaultOrder: 7,
   })
   nothosubsp?: string;
 
   @property({
     type: 'string',
     infraspecific: true,
+    defaultOrder: 8,
   })
   nothoforma?: string;
 
@@ -79,18 +88,21 @@ export class NomenclatureSearch extends Entity {
 
   @property({
     type: 'string',
+    defaultOrder: 9,
   })
   authors?: string;
 
   @property({
     type: 'string',
     name: 'genus_h',
+    defaultOrder: 10,
   })
   genusH?: string;
 
   @property({
     type: 'string',
     name: 'species_h',
+    defaultOrder: 11,
   })
   speciesH?: string;
 
@@ -98,6 +110,7 @@ export class NomenclatureSearch extends Entity {
     type: 'string',
     name: 'subsp_h',
     infraspecific: true,
+    defaultOrder: 12,
   })
   subspH?: string;
 
@@ -105,6 +118,7 @@ export class NomenclatureSearch extends Entity {
     type: 'string',
     name: 'var_h',
     infraspecific: true,
+    defaultOrder: 13,
   })
   varH?: string;
 
@@ -112,6 +126,7 @@ export class NomenclatureSearch extends Entity {
     type: 'string',
     name: 'subvar_h',
     infraspecific: true,
+    defaultOrder: 14,
   })
   subvarH?: string;
 
@@ -119,6 +134,7 @@ export class NomenclatureSearch extends Entity {
     type: 'string',
     name: 'forma_h',
     infraspecific: true,
+    defaultOrder: 15,
   })
   formaH?: string;
 
@@ -126,6 +142,7 @@ export class NomenclatureSearch extends Entity {
     type: 'string',
     name: 'nothosubsp_h',
     infraspecific: true,
+    defaultOrder: 16,
   })
   nothosubspH?: string;
 
@@ -133,12 +150,14 @@ export class NomenclatureSearch extends Entity {
     type: 'string',
     name: 'nothoforma_h',
     infraspecific: true,
+    defaultOrder: 17,
   })
   nothoformaH?: string;
 
   @property({
     type: 'string',
     name: 'authors_h',
+    defaultOrder: 18,
   })
   authorsH?: string;
 
@@ -161,12 +180,6 @@ export class NomenclatureSearch extends Entity {
     type: 'string',
   })
   subaggregate?: string;
-
-  @property({
-    type: 'string',
-    name: 'accepted_names',
-  })
-  acceptedNames?: string;
 
   constructor(data?: Partial<NomenclatureSearch>) {
     super(data);
