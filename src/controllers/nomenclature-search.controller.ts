@@ -155,7 +155,10 @@ export class NomenclatureSearchController {
       fb.offset((page - 1) * rowsPerPage).limit(rowsPerPage);
     }
 
-    const filter = fb.order(searchDefaultOrder).build();
+    const filter = fb
+      .include('acceptedNames')
+      .order(searchDefaultOrder)
+      .build();
 
     const data = await this.nomenclatureSearchRepository.find(filter);
     const countResult = await this.nomenclatureSearchRepository.count(where);

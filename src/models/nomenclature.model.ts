@@ -1,80 +1,66 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
-import {Nomenclature} from './nomenclature.model';
-import {Synonyms} from './synonyms.model';
+import {Entity, model, property} from '@loopback/repository';
 
 @model({
-  name: 'v_nomenclature_search',
+  name: 'nomenclature',
 })
-export class NomenclatureSearch extends Entity {
+export class Nomenclature extends Entity {
   @property({
     type: 'number',
     id: true,
-    defaultOrder: 19,
+    generated: true,
   })
   id?: number;
 
   @property({
     type: 'string',
+    name: 'ntype',
+    required: true,
   })
-  status?: string;
+  status: string;
 
   @property({
     type: 'boolean',
-    default: false,
+    required: true,
   })
-  hybrid?: boolean;
+  hybrid: boolean;
 
   @property({
     type: 'string',
-    defaultOrder: 1,
   })
   genus?: string;
 
   @property({
     type: 'string',
-    defaultOrder: 2,
   })
   species?: string;
 
   @property({
     type: 'string',
-    infraspecific: true,
-    defaultOrder: 3,
   })
   subsp?: string;
 
   @property({
     type: 'string',
-    infraspecific: true,
-    defaultOrder: 4,
   })
   var?: string;
 
   @property({
     type: 'string',
-    infraspecific: true,
-    defaultOrder: 5,
   })
   subvar?: string;
 
   @property({
     type: 'string',
-    infraspecific: true,
-    defaultOrder: 6,
   })
   forma?: string;
 
   @property({
     type: 'string',
-    infraspecific: true,
-    defaultOrder: 7,
   })
   nothosubsp?: string;
 
   @property({
     type: 'string',
-    infraspecific: true,
-    defaultOrder: 8,
   })
   nothoforma?: string;
 
@@ -90,7 +76,6 @@ export class NomenclatureSearch extends Entity {
 
   @property({
     type: 'string',
-    defaultOrder: 9,
   })
   authors?: string;
 
@@ -171,6 +156,11 @@ export class NomenclatureSearch extends Entity {
   @property({
     type: 'string',
   })
+  tribus?: string;
+
+  @property({
+    type: 'string',
+  })
   vernacular?: string;
 
   @property({
@@ -183,22 +173,13 @@ export class NomenclatureSearch extends Entity {
   })
   subaggregate?: string;
 
-  @hasMany(() => Nomenclature, {
-    through: {
-      model: () => Synonyms,
-      keyFrom: 'idSynonym',
-      keyTo: 'idParent',
-    },
-  })
-  acceptedNames: Nomenclature[];
-
-  constructor(data?: Partial<NomenclatureSearch>) {
+  constructor(data?: Partial<Nomenclature>) {
     super(data);
   }
 }
 
-export interface NomenclatureSearchRelations {
+export interface NomenclatureRelations {
   // describe navigational properties here
 }
 
-export type NomenclatureSearchWithRelations = NomenclatureSearch & NomenclatureSearchRelations;
+export type NomenclatureWithRelations = Nomenclature & NomenclatureRelations;
