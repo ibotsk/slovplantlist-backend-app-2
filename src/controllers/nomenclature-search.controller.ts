@@ -161,7 +161,7 @@ export class NomenclatureSearchController {
       }));
       ands.push({ or: infraOrs });
     }
-    if (status) {
+    if (status && status.length > 0) {
       const statusOrs = { status: { inq: status } };
       ands.push(statusOrs);
     }
