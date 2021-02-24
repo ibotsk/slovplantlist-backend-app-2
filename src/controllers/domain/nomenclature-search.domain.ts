@@ -11,10 +11,10 @@ export interface NomenclatureSearchScientificRequest {
 
 export interface NomenclatureSearchResponse {
   data: NomenclatureSearch[];
+  totalRecords: number;
   pagination: {
     page?: number,
     rowsPerPage?: number,
     totalPages: number,
-    totalRecords: number,
   };
 }

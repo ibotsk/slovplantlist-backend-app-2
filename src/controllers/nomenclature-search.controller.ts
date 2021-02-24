@@ -34,14 +34,30 @@ export class NomenclatureSearchController {
     public nomenclatureSearchRepository: NomenclatureSearchRepository,
   ) { }
 
-  @post('/nomenclature/search/scientific')
+  @post('/nomenclature-search/scientific')
   @response(200, {
     description: 'Array of NomenclatureSearch model instances',
     content: {
       'application/json': {
         schema: {
-          type: 'array',
-          items: getModelSchemaRef(NomenclatureSearch, {includeRelations: true}),
+          type: 'object',
+          required: ['data', 'totalRecords'],
+          properties: {
+            data: {
+              type: 'array',
+              items: getModelSchemaRef(NomenclatureSearch, { includeRelations: true }),
+            },
+            totalRecord: { type: 'integer' },
+            pagination: {
+              type: 'object',
+              properties: {
+                page: { type: 'integer' },
+                rowsPerPage: { type: 'integer' },
+                totalPages: { type: 'integer' },
+              }
+            }
+          }
+          
         },
       },
     },
@@ -168,11 +184,11 @@ export class NomenclatureSearchController {
 
     return {
       data,
+      totalRecords: totalCount,
       pagination: {
         page,
         rowsPerPage,
         totalPages,
-        totalRecords: totalCount,
       },
     };
   }
