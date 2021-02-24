@@ -4,7 +4,7 @@ export interface NomenclatureSearchScientificRequest {
   genus?: string;
   species?: string;
   infraspecific?: string;
-  status?: string;
+  status?: string[];
   page?: number;
   rowsPerPage?: number;
 }

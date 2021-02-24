@@ -1,4 +1,4 @@
-import {FilterBuilder, WhereBuilder} from '@loopback/filter';
+import { FilterBuilder, WhereBuilder } from '@loopback/filter';
 import {
   repository,
 } from '@loopback/repository';
@@ -7,8 +7,8 @@ import {
   requestBody,
   response
 } from '@loopback/rest';
-import {NomenclatureSearch} from '../models';
-import {NomenclatureSearchRepository} from '../repositories';
+import { NomenclatureSearch } from '../models';
+import { NomenclatureSearchRepository } from '../repositories';
 import {
   NomenclatureSearchScientificRequest,
   NomenclatureSearchResponse,
@@ -24,8 +24,8 @@ const searchDefaultOrder = Object.keys(
 
 searchDefaultOrder.sort((a, b) => (
   nomenclatureSearchProperties[a].defaultOrder
-  > nomenclatureSearchProperties[b].defaultOrder
-  ? 1 : -1
+    > nomenclatureSearchProperties[b].defaultOrder
+    ? 1 : -1
 ));
 
 export class NomenclatureSearchController {
@@ -57,7 +57,7 @@ export class NomenclatureSearchController {
               }
             }
           }
-          
+
         },
       },
     },
@@ -120,8 +120,11 @@ export class NomenclatureSearchController {
                     required: ['status'],
                     properties: {
                       status: {
-                        type: 'string',
-                        minLength: 1,
+                        type: 'array',
+                        items: {
+                          type: 'string',
+                          minLength: 1,
+                        }
                       },
                     }
                   }
@@ -141,25 +144,26 @@ export class NomenclatureSearchController {
 
     const ands = [];
     if (genus) {
-      ands.push({genus: {like: `%${genus}%`}});
+      ands.push({ genus: { like: `%${genus}%` } });
     }
     if (species) {
       const speciesOr = {
         or: [
-          {species: {like: `%${species}%`}},
-          {speciesH: {like: `%${species}%`}},
+          { species: { like: `%${species}%` } },
+          { speciesH: { like: `%${species}%` } },
         ],
       };
       ands.push(speciesOr);
     }
     if (infraspecific) {
       const infraOrs = searchInfraspecificFields.map((field) => ({
-        [field]: {like: `%${infraspecific}%`},
+        [field]: { like: `%${infraspecific}%` },
       }));
-      ands.push({or: infraOrs});
+      ands.push({ or: infraOrs });
     }
     if (status) {
-      ands.push({status});
+      const statusOrs = { status: { inq: status } };
+      ands.push(statusOrs);
     }
 
     const wb = new WhereBuilder<NomenclatureSearch>();
