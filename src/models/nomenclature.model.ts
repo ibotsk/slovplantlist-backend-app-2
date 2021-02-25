@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Genus} from './genus.model';
 
 @model({
   name: 'nomenclature',
@@ -175,9 +176,8 @@ export class Nomenclature extends Entity {
   subaggregate?: string;
 
   //----- realational properties ----- //
-  @property({
-    type: 'number',
-    name: 'id_genus',
+  @belongsTo(() => Genus, {name: 'genusReference'}, {
+    name:'id_genus',
     hidden: true,
   })
   idGenus?: number;

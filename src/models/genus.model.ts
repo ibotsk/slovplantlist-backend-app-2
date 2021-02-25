@@ -36,12 +36,14 @@ export class Genus extends Entity {
 
   @property({
     type: 'number',
+    name: 'id_family',
     hidden: true,
   })
   idFamily?: number;
 
   @property({
     type: 'number',
+    name: 'id_family_apg',
     hidden: true,
   })
   idFamilyApg?: number;
