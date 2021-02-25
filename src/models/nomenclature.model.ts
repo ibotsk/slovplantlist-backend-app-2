@@ -1,5 +1,8 @@
-import { Entity, model, property, belongsTo } from '@loopback/repository';
+import {
+  Entity, model, property, belongsTo, hasMany,
+} from '@loopback/repository';
 import { Genus } from './genus.model';
+import { Synonyms } from './synonyms.model';
 
 @model({
   name: 'nomenclature',
@@ -210,6 +213,15 @@ export class Nomenclature extends Entity {
     hidden: true,
   })
   idTaxonPosition?: number;
+
+  @hasMany(() => Nomenclature, {
+    through: {
+      model: () => Synonyms,
+      keyFrom: 'idSynonym',
+      keyTo: 'idParent',
+    },
+  })
+  acceptedNames: Nomenclature[];
 
   constructor(data?: Partial<Nomenclature>) {
     super(data);

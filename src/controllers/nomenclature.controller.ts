@@ -32,6 +32,7 @@ export class NomenclatureController {
   ): Promise<Nomenclature> {
     const fb = new FilterBuilder<Nomenclature>();
     const filter = fb
+      .include('acceptedNames')
       .include('genusReference')
       .include('basionym')
       .include('nomenNovum')

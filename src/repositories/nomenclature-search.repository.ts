@@ -16,29 +16,20 @@ export class NomenclatureSearchRepository extends DefaultCrudRepository<
   NomenclatureSearchRelations
   > {
   public readonly acceptedNames: HasManyThroughRepositoryFactory<
-    Nomenclature,
-    typeof Nomenclature.prototype.id,
-    Synonyms,
-    typeof NomenclatureSearch.prototype.id
+    Nomenclature, typeof Nomenclature.prototype.id,
+    Synonyms, typeof NomenclatureSearch.prototype.id
   >;
 
   constructor(
     @inject('datasources.slovplantlist') dataSource: SlovplantlistDataSource,
-    @repository.getter('NomenclatureRepository')
-    nomenclatureRepositoryGetter: Getter<NomenclatureRepository>,
-    @repository.getter('SynonymsRepository')
-    synonymsRepositoryGetter: Getter<SynonymsRepository>
+    @repository.getter('NomenclatureRepository') protected nomenclatureRepositoryGetter: Getter<NomenclatureRepository>,
+    @repository.getter('SynonymsRepository') protected synonymsRepositoryGetter: Getter<SynonymsRepository>,
   ) {
     super(NomenclatureSearch, dataSource);
 
     this.acceptedNames = this.createHasManyThroughRepositoryFactoryFor(
-      'acceptedNames',
-      nomenclatureRepositoryGetter,
-      synonymsRepositoryGetter,
+      'acceptedNames', nomenclatureRepositoryGetter, synonymsRepositoryGetter,
     );
-
-    this.registerInclusionResolver(
-      'acceptedNames', this.acceptedNames.inclusionResolver,
-    );
+    this.registerInclusionResolver('acceptedNames', this.acceptedNames.inclusionResolver);
   }
 }
