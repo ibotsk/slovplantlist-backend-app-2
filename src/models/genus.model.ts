@@ -8,7 +8,6 @@ export class Genus extends Entity {
     type: 'number',
     id: true,
     generated: true,
-    hidden: true,
   })
   id?: number;
 

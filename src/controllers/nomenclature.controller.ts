@@ -31,7 +31,14 @@ export class NomenclatureController {
     @param.path.number('id') id: number,
   ): Promise<Nomenclature> {
     const fb = new FilterBuilder<Nomenclature>();
-    const filter = fb.include('genusReference').build();
+    const filter = fb
+      .include('genusReference')
+      .include('basionym')
+      .include('nomenNovum')
+      .include('replaced')
+      .include('parentCombination')
+      .include('taxonPosition')
+      .build();
     return this.nomenclatureRepository.findById(id, filter);
   }
 

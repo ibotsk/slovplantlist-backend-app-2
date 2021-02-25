@@ -1,5 +1,5 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
-import {Genus} from './genus.model';
+import { Entity, model, property, belongsTo } from '@loopback/repository';
+import { Genus } from './genus.model';
 
 @model({
   name: 'nomenclature',
@@ -9,7 +9,6 @@ export class Nomenclature extends Entity {
     type: 'number',
     id: true,
     generated: true,
-    hidden: true,
   })
   id?: number;
 
@@ -176,42 +175,37 @@ export class Nomenclature extends Entity {
   subaggregate?: string;
 
   //----- realational properties ----- //
-  @belongsTo(() => Genus, {name: 'genusReference'}, {
-    name:'id_genus',
+  @belongsTo(() => Genus, { name: 'genusReference' }, {
+    name: 'id_genus',
     hidden: true,
   })
   idGenus?: number;
 
-  @property({
-    type: 'number',
+  @belongsTo(() => Nomenclature, { name: 'basionym' }, {
     name: 'id_basionym',
     hidden: true,
   })
-  idBasionym?: number;
+  idBasionym: number;
 
-  @property({
-    type: 'number',
+  @belongsTo(() => Nomenclature, { name: 'nomenNovum' }, {
     name: 'id_nomen_novum',
     hidden: true,
   })
   idNomenNovum?: number;
 
-  @property({
-    type: 'number',
+  @belongsTo(() => Nomenclature, { name: 'replaced' }, {
     name: 'id_replaced',
     hidden: true,
   })
   idReplaced?: number;
 
-  @property({
-    type: 'number',
+  @belongsTo(() => Nomenclature, { name: 'parentCombination' }, {
     name: 'id_parent_combination',
     hidden: true,
   })
   idParentCombination?: number;
 
-  @property({
-    type: 'number',
+  @belongsTo(() => Nomenclature, { name: 'taxonPosition' }, {
     name: 'id_taxon_position',
     hidden: true,
   })
