@@ -8,6 +8,7 @@ export class Nomenclature extends Entity {
     type: 'number',
     id: true,
     generated: true,
+    hidden: true,
   })
   id?: number;
 
@@ -172,6 +173,49 @@ export class Nomenclature extends Entity {
     type: 'string',
   })
   subaggregate?: string;
+
+  //----- realational properties ----- //
+  @property({
+    type: 'number',
+    name: 'id_genus',
+    hidden: true,
+  })
+  idGenus?: number;
+
+  @property({
+    type: 'number',
+    name: 'id_basionym',
+    hidden: true,
+  })
+  idBasionym?: number;
+
+  @property({
+    type: 'number',
+    name: 'id_nomen_novum',
+    hidden: true,
+  })
+  idNomenNovum?: number;
+
+  @property({
+    type: 'number',
+    name: 'id_replaced',
+    hidden: true,
+  })
+  idReplaced?: number;
+
+  @property({
+    type: 'number',
+    name: 'id_parent_combination',
+    hidden: true,
+  })
+  idParentCombination?: number;
+
+  @property({
+    type: 'number',
+    name: 'id_taxon_position',
+    hidden: true,
+  })
+  idTaxonPosition?: number;
 
   constructor(data?: Partial<Nomenclature>) {
     super(data);
