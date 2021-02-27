@@ -1,4 +1,5 @@
-import { Entity, model, property } from '@loopback/repository';
+import { Entity, model, property, belongsTo} from '@loopback/repository';
+import {FamilyApg} from './family-apg.model';
 
 @model({
   name: 'genus',
@@ -40,13 +41,11 @@ export class Genus extends Entity {
   })
   idFamily?: number;
 
-  @property({
-    type: 'number',
+  @belongsTo(() => FamilyApg, {name: 'family'}, {
     name: 'id_family_apg',
     hidden: true,
   })
-  idFamilyApg?: number;
-
+  idFamilyApg: number;
 
   constructor(data?: Partial<Genus>) {
     super(data);
