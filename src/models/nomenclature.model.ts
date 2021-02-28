@@ -214,6 +214,9 @@ export class Nomenclature extends Entity {
   })
   idTaxonPosition?: number;
 
+  @hasMany(() => Synonyms, { keyTo: 'idParent' })
+  synonyms: Synonyms[];
+
   @hasMany(() => Nomenclature, {
     through: {
       model: () => Synonyms,

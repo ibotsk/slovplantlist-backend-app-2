@@ -1,8 +1,7 @@
 import { inject, Getter } from '@loopback/core';
 import {
   DefaultCrudRepository, repository,
-  BelongsToAccessor, HasManyThroughRepositoryFactory,
-} from '@loopback/repository';
+  BelongsToAccessor, HasManyThroughRepositoryFactory, HasManyRepositoryFactory} from '@loopback/repository';
 import { SlovplantlistDataSource } from '../datasources';
 import {
   Nomenclature, NomenclatureRelations, Genus, Synonyms,
@@ -33,12 +32,15 @@ export class NomenclatureRepository extends DefaultCrudRepository<
     Synonyms, typeof Nomenclature.prototype.id
   >;
 
+  public readonly synonyms: HasManyRepositoryFactory<Synonyms, typeof Nomenclature.prototype.id>;
+
   constructor(
     @inject('datasources.slovplantlist') dataSource: SlovplantlistDataSource,
     @repository.getter('GenusRepository') protected genusRepositoryGetter: Getter<GenusRepository>,
     @repository.getter('SynonymsRepository') protected synonymsRepositoryGetter: Getter<SynonymsRepository>,
   ) {
     super(Nomenclature, dataSource);
+    this.synonyms = this.createHasManyRepositoryFactoryFor('synonyms', synonymsRepositoryGetter,);
     this.genusReference = this.createBelongsToAccessorFor('genusReference', genusRepositoryGetter);
     this.registerInclusionResolver('genusReference', this.genusReference.inclusionResolver);
 
@@ -61,5 +63,18 @@ export class NomenclatureRepository extends DefaultCrudRepository<
       'acceptedNames', Getter.fromValue(this), synonymsRepositoryGetter,
     );
     this.registerInclusionResolver('acceptedNames', this.acceptedNames.inclusionResolver);
+  }
+}
+
+// used in synonyms relation to avoid circular dependency
+export class NomenclatureAsSynonymRepository extends DefaultCrudRepository<
+  Nomenclature,
+  typeof Nomenclature.prototype.id,
+  NomenclatureRelations
+  > {
+  constructor(
+    @inject('datasources.slovplantlist') dataSource: SlovplantlistDataSource,
+  ) {
+    super(Nomenclature, dataSource);
   }
 }
