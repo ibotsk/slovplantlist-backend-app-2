@@ -1,13 +1,17 @@
 import { inject, Getter } from '@loopback/core';
 import {
   DefaultCrudRepository, repository,
-  BelongsToAccessor, HasManyThroughRepositoryFactory, HasManyRepositoryFactory} from '@loopback/repository';
+  BelongsToAccessor, HasManyThroughRepositoryFactory, HasManyRepositoryFactory
+} from '@loopback/repository';
 import { SlovplantlistDataSource } from '../datasources';
 import {
   Nomenclature, NomenclatureRelations, Genus, Synonyms,
 } from '../models';
 import { GenusRepository } from './genus.repository';
-import { SynonymsRepository } from './synonyms.repository';
+import {
+  SynonymsRepository,
+  SynonymsOfSynonymsRepository,
+} from './synonyms.repository';
 
 export class NomenclatureRepository extends DefaultCrudRepository<
   Nomenclature,
@@ -40,9 +44,11 @@ export class NomenclatureRepository extends DefaultCrudRepository<
     @repository.getter('SynonymsRepository') protected synonymsRepositoryGetter: Getter<SynonymsRepository>,
   ) {
     super(Nomenclature, dataSource);
-    this.synonyms = this.createHasManyRepositoryFactoryFor('synonyms', synonymsRepositoryGetter,);
     this.genusReference = this.createBelongsToAccessorFor('genusReference', genusRepositoryGetter);
     this.registerInclusionResolver('genusReference', this.genusReference.inclusionResolver);
+
+    this.synonyms = this.createHasManyRepositoryFactoryFor('synonyms', synonymsRepositoryGetter);
+    this.registerInclusionResolver('synonyms', this.synonyms.inclusionResolver);
 
     this.basionym = this.createBelongsToAccessorFor('basionym', Getter.fromValue(this));
     this.registerInclusionResolver('basionym', this.basionym.inclusionResolver);
@@ -72,9 +78,20 @@ export class NomenclatureAsSynonymRepository extends DefaultCrudRepository<
   typeof Nomenclature.prototype.id,
   NomenclatureRelations
   > {
+
+  public readonly subsynonymsNomenclatoric: HasManyThroughRepositoryFactory<Nomenclature, typeof Nomenclature.prototype.id,
+    Synonyms,
+    typeof Nomenclature.prototype.id
+  >;
+
   constructor(
     @inject('datasources.slovplantlist') dataSource: SlovplantlistDataSource,
+    @repository.getter('SynonymsOfSynonymsRepository') protected synonymsOfSynonymsRepositoryGetter: Getter<SynonymsOfSynonymsRepository>,
   ) {
     super(Nomenclature, dataSource);
+
+    this.subsynonymsNomenclatoric = this.createHasManyThroughRepositoryFactoryFor(
+      'subsynonymsNomenclatoric', Getter.fromValue(this), synonymsOfSynonymsRepositoryGetter);
+    this.registerInclusionResolver('subsynonymsNomenclatoric', this.subsynonymsNomenclatoric.inclusionResolver);
   }
 }

@@ -220,6 +220,15 @@ export class Nomenclature extends Entity {
   @hasMany(() => Nomenclature, {
     through: {
       model: () => Synonyms,
+      keyFrom: 'idParent',
+      keyTo: 'idSynonym',
+    }
+  })
+  subsynonymsNomenclatoric: Nomenclature[];
+
+  @hasMany(() => Nomenclature, {
+    through: {
+      model: () => Synonyms,
       keyFrom: 'idSynonym',
       keyTo: 'idParent',
     },

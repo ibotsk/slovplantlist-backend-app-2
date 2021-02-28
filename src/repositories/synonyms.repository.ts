@@ -21,3 +21,16 @@ export class SynonymsRepository extends DefaultCrudRepository<
     this.registerInclusionResolver('synonym', this.synonym.inclusionResolver);
   }
 }
+
+export class SynonymsOfSynonymsRepository extends DefaultCrudRepository<
+  Synonyms,
+  typeof Synonyms.prototype.id,
+  SynonymsRelations
+  > {
+
+  constructor(
+    @inject('datasources.slovplantlist') dataSource: SlovplantlistDataSource,
+  ) {
+    super(Synonyms, dataSource);
+  }
+}

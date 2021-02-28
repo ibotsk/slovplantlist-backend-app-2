@@ -19,10 +19,21 @@ const whereSyntype = (syntype: number) => (
 
 const fetchSynonyms = async (
   repo: NomenclatureRepository, id: number, syntype: number,
+  withSubsynonyms = false,
 ) => {
+  const includeFilter = {
+    relation: 'synonym',
+    scope: {},
+  };
+  if (withSubsynonyms) {
+    includeFilter.scope = {
+      include: ['subsynonymsNomenclatoric'], // TODO: subsynonymsNomenclatoric include all synonyms, not just of type 3
+    }
+  }
+
   const fb = new FilterBuilder<Synonyms>();
   const filter = fb
-    .include('synonym')
+    .include(includeFilter)
     .where(whereSyntype(syntype))
     .build();
 
@@ -60,13 +71,15 @@ export class NomenclatureSynonymsController {
   })
   async findSynonyms(
     @param.path.number('id') id: number,
+    @param.query.boolean('withSubsynonyms') withSubsynonyms = false,
   ): Promise<NomenclatureSynonymsResponse> {
 
     const nomenclatoricSynonyms = await fetchSynonyms(
       this.nomenclatureRepository, id, 3,
     );
+
     const taxonomicSynonyms = await fetchSynonyms(
-      this.nomenclatureRepository, id, 2,
+      this.nomenclatureRepository, id, 2, withSubsynonyms,
     );
     const otherSynonyms = await fetchSynonyms(
       this.nomenclatureRepository, id, 0,
