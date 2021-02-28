@@ -7,10 +7,7 @@ import {
   param,
 } from '@loopback/rest';
 import { FilterBuilder, WhereBuilder } from '@loopback/filter';
-import {
-  Nomenclature,
-  Synonyms,
-} from '../models';
+import { Synonyms } from '../models';
 import { NomenclatureRepository } from '../repositories';
 import {
   NomenclatureSynonymsResponse,
@@ -24,7 +21,10 @@ const fetchSynonyms = async (
   repo: NomenclatureRepository, id: number, syntype: number,
 ) => {
   const fb = new FilterBuilder<Synonyms>();
-  const filter = fb.include('synonym').where(whereSyntype(syntype)).build();
+  const filter = fb
+    .include('synonym')
+    .where(whereSyntype(syntype))
+    .build();
 
   return repo.synonyms(id).find(filter);
 }
@@ -37,7 +37,7 @@ export class NomenclatureSynonymsController {
   @get('/nomenclatures/{id}/synonyms', {
     responses: {
       '200': {
-        description: 'Array of Nomenclature has many Synonyms',
+        description: 'Nomenclatoric, taxonomic and other synonyms',
         content: {
           'application/json': {
             schema: {
@@ -45,16 +45,12 @@ export class NomenclatureSynonymsController {
               required: [
                 'nomenclatoricSynonyms',
                 'taxonomicSynonyms',
-                'invalidDesignations',
-                'misidentifications',
                 'otherSynonyms',
               ],
               properties: {
-                nomenclatoricSynonyms: { type: 'array', items: getModelSchemaRef(Nomenclature) },
-                taxonomicSynonyms: { type: 'array', items: getModelSchemaRef(Nomenclature) },
-                invalidDesignations: { type: 'array', items: getModelSchemaRef(Nomenclature) },
-                misidentifications: { type: 'array', items: getModelSchemaRef(Nomenclature) },
-                otherSynonyms: { type: 'array', items: getModelSchemaRef(Nomenclature) },
+                nomenclatoricSynonyms: { type: 'array', items: getModelSchemaRef(Synonyms) },
+                taxonomicSynonyms: { type: 'array', items: getModelSchemaRef(Synonyms) },
+                otherSynonyms: { type: 'array', items: getModelSchemaRef(Synonyms) },
               }
             },
           },
@@ -62,7 +58,7 @@ export class NomenclatureSynonymsController {
       },
     },
   })
-  async find(
+  async findSynonyms(
     @param.path.number('id') id: number,
   ): Promise<NomenclatureSynonymsResponse> {
 
@@ -72,12 +68,6 @@ export class NomenclatureSynonymsController {
     const taxonomicSynonyms = await fetchSynonyms(
       this.nomenclatureRepository, id, 2,
     );
-    const invalidDesignations = await fetchSynonyms(
-      this.nomenclatureRepository, id, 1,
-    );
-    const misidentifications = await fetchSynonyms(
-      this.nomenclatureRepository, id, 4,
-    );
     const otherSynonyms = await fetchSynonyms(
       this.nomenclatureRepository, id, 0,
     );
@@ -85,10 +75,50 @@ export class NomenclatureSynonymsController {
     return {
       nomenclatoricSynonyms,
       taxonomicSynonyms,
-      invalidDesignations,
-      misidentifications,
       otherSynonyms,
     };
+  }
+
+  @get('/nomenclatures/{id}/invalid-designations', {
+    responses: {
+      '200': {
+        description: 'Invalid designations',
+        content: {
+          'application/json': {
+            schema:
+              { type: 'array', items: getModelSchemaRef(Synonyms) }
+          },
+        },
+      },
+    },
+  })
+  async findInvalidDesignation(
+    @param.path.number('id') id: number,
+  ): Promise<Synonyms[]> {
+    return fetchSynonyms(
+      this.nomenclatureRepository, id, 1,
+    );
+  }
+
+  @get('/nomenclatures/{id}/misidentifications', {
+    responses: {
+      '200': {
+        description: 'Misidentifications',
+        content: {
+          'application/json': {
+            schema:
+              { type: 'array', items: getModelSchemaRef(Synonyms) }
+          },
+        },
+      },
+    },
+  })
+  async findMisidentifications(
+    @param.path.number('id') id: number,
+  ): Promise<Synonyms[]> {
+    return fetchSynonyms(
+      this.nomenclatureRepository, id, 4,
+    );
   }
 
 }
