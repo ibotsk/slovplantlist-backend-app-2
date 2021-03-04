@@ -12,6 +12,7 @@ export class Nomenclature extends Entity {
     type: 'number',
     id: true,
     generated: true,
+    defaultOrder: 19,
   })
   id?: number;
 
@@ -30,41 +31,49 @@ export class Nomenclature extends Entity {
 
   @property({
     type: 'string',
+    defaultOrder: 1,
   })
   genus?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 2,
   })
   species?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 3,
   })
   subsp?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 4,
   })
   var?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 5,
   })
   subvar?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 6,
   })
   forma?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 7,
   })
   nothosubsp?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 8,
   })
   nothoforma?: string;
 
@@ -80,6 +89,7 @@ export class Nomenclature extends Entity {
 
   @property({
     type: 'string',
+    defaultOrder: 9,
   })
   authors?: string;
 
@@ -234,6 +244,21 @@ export class Nomenclature extends Entity {
     },
   })
   acceptedNames: Nomenclature[];
+
+  @hasMany(() => Nomenclature, {keyTo: 'idBasionym'})
+  basionymFor: Nomenclature[];
+
+  @hasMany(() => Nomenclature, { keyTo: 'idNomenNovum' })
+  nomenNovumFor: Nomenclature[];
+
+  @hasMany(() => Nomenclature, { keyTo: 'idReplaced' })
+  replacedFor: Nomenclature[];
+
+  @hasMany(() => Nomenclature, { keyTo: 'idParentCombination' })
+  parentCombinationFor: Nomenclature[];
+
+  @hasMany(() => Nomenclature, { keyTo: 'idTaxonPosition' })
+  taxonPositionFor: Nomenclature[];
 
   constructor(data?: Partial<Nomenclature>) {
     super(data);

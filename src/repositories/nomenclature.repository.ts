@@ -38,6 +38,16 @@ export class NomenclatureRepository extends DefaultCrudRepository<
 
   public readonly synonyms: HasManyRepositoryFactory<Synonyms, typeof Nomenclature.prototype.id>;
 
+  public readonly basionymFor: HasManyRepositoryFactory<Nomenclature, typeof Nomenclature.prototype.id>;
+
+  public readonly nomenNovumFor: HasManyRepositoryFactory<Nomenclature, typeof Nomenclature.prototype.id>;
+
+  public readonly replacedFor: HasManyRepositoryFactory<Nomenclature, typeof Nomenclature.prototype.id>;
+
+  public readonly parentCombinationFor: HasManyRepositoryFactory<Nomenclature, typeof Nomenclature.prototype.id>;
+
+  public readonly taxonPositionFor: HasManyRepositoryFactory<Nomenclature, typeof Nomenclature.prototype.id>;
+
   constructor(
     @inject('datasources.slovplantlist') dataSource: SlovplantlistDataSource,
     @repository.getter('GenusRepository') protected genusRepositoryGetter: Getter<GenusRepository>,
@@ -65,10 +75,23 @@ export class NomenclatureRepository extends DefaultCrudRepository<
     this.taxonPosition = this.createBelongsToAccessorFor('taxonPosition', Getter.fromValue(this));
     this.registerInclusionResolver('taxonPosition', this.taxonPosition.inclusionResolver);
 
-    this.acceptedNames = this.createHasManyThroughRepositoryFactoryFor(
-      'acceptedNames', Getter.fromValue(this), synonymsRepositoryGetter,
-    );
+    this.acceptedNames = this.createHasManyThroughRepositoryFactoryFor('acceptedNames', Getter.fromValue(this), synonymsRepositoryGetter);
     this.registerInclusionResolver('acceptedNames', this.acceptedNames.inclusionResolver);
+
+    this.basionymFor = this.createHasManyRepositoryFactoryFor('basionymFor', Getter.fromValue(this));
+    this.registerInclusionResolver('basionymFor', this.basionymFor.inclusionResolver);
+
+    this.nomenNovumFor = this.createHasManyRepositoryFactoryFor('nomenNovumFor', Getter.fromValue(this));
+    this.registerInclusionResolver('nomenNovumFor', this.nomenNovumFor.inclusionResolver);
+
+    this.replacedFor = this.createHasManyRepositoryFactoryFor('replacedFor', Getter.fromValue(this));
+    this.registerInclusionResolver('replacedFor', this.replacedFor.inclusionResolver);
+
+    this.parentCombinationFor = this.createHasManyRepositoryFactoryFor('parentCombinationFor', Getter.fromValue(this));
+    this.registerInclusionResolver('parentCombinationFor', this.parentCombinationFor.inclusionResolver);
+    
+    this.taxonPositionFor = this.createHasManyRepositoryFactoryFor('taxonPositionFor', Getter.fromValue(this));
+    this.registerInclusionResolver('taxonPositionFor', this.taxonPositionFor.inclusionResolver);
   }
 }
 
