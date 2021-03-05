@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Nomenclature} from './nomenclature.model';
 
 @model({
   name: 'synonyms',
@@ -8,6 +9,7 @@ export class Synonyms extends Entity {
     type: 'number',
     id: true,
     generated: true,
+    hidden: true,
   })
   id?: number;
 
@@ -15,24 +17,19 @@ export class Synonyms extends Entity {
     type: 'number',
     name: 'id_parent',
     required: true,
+    hidden: true,
   })
-  idParent: string;
-
-  @property({
-    type: 'number',
-    name: 'id_synonym',
-    required: true,
-  })
-  idSynonym: number;
-
+  idParent: number;
   @property({
     type: 'number',
     required: true,
+    hidden: true,
   })
   syntype: number;
 
   @property({
     type: 'number',
+    hidden: true,
   })
   rorder?: number;
 
@@ -42,13 +39,19 @@ export class Synonyms extends Entity {
   })
   misidentificationAuthor?: string;
 
+  @belongsTo(() => Nomenclature, {name: 'synonym'}, {
+    name: 'id_synonym',
+    hidden: true,
+  })
+  idSynonym: number;
+
   constructor(data?: Partial<Synonyms>) {
     super(data);
   }
 }
 
 export interface SynonymsRelations {
-  // describe navigational properties here
+  synonym: Nomenclature;
 }
 
 export type SynonymsWithRelations = Synonyms & SynonymsRelations;

@@ -1,4 +1,8 @@
-import {Entity, model, property} from '@loopback/repository';
+import {
+  Entity, model, property, belongsTo, hasMany,
+} from '@loopback/repository';
+import { Genus } from './genus.model';
+import { Synonyms } from './synonyms.model';
 
 @model({
   name: 'nomenclature',
@@ -8,6 +12,7 @@ export class Nomenclature extends Entity {
     type: 'number',
     id: true,
     generated: true,
+    defaultOrder: 19,
   })
   id?: number;
 
@@ -26,41 +31,49 @@ export class Nomenclature extends Entity {
 
   @property({
     type: 'string',
+    defaultOrder: 1,
   })
   genus?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 2,
   })
   species?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 3,
   })
   subsp?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 4,
   })
   var?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 5,
   })
   subvar?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 6,
   })
   forma?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 7,
   })
   nothosubsp?: string;
 
   @property({
     type: 'string',
+    defaultOrder: 8,
   })
   nothoforma?: string;
 
@@ -76,6 +89,7 @@ export class Nomenclature extends Entity {
 
   @property({
     type: 'string',
+    defaultOrder: 9,
   })
   authors?: string;
 
@@ -172,6 +186,79 @@ export class Nomenclature extends Entity {
     type: 'string',
   })
   subaggregate?: string;
+
+  //----- realational properties ----- //
+  @belongsTo(() => Genus, { name: 'genusReference' }, {
+    name: 'id_genus',
+    hidden: true,
+  })
+  idGenus?: number;
+
+  @belongsTo(() => Nomenclature, { name: 'basionym' }, {
+    name: 'id_basionym',
+    hidden: true,
+  })
+  idBasionym: number;
+
+  @belongsTo(() => Nomenclature, { name: 'nomenNovum' }, {
+    name: 'id_nomen_novum',
+    hidden: true,
+  })
+  idNomenNovum?: number;
+
+  @belongsTo(() => Nomenclature, { name: 'replaced' }, {
+    name: 'id_replaced',
+    hidden: true,
+  })
+  idReplaced?: number;
+
+  @belongsTo(() => Nomenclature, { name: 'parentCombination' }, {
+    name: 'id_parent_combination',
+    hidden: true,
+  })
+  idParentCombination?: number;
+
+  @belongsTo(() => Nomenclature, { name: 'taxonPosition' }, {
+    name: 'id_taxon_position',
+    hidden: true,
+  })
+  idTaxonPosition?: number;
+
+  @hasMany(() => Synonyms, { keyTo: 'idParent' })
+  synonyms: Synonyms[];
+
+  @hasMany(() => Nomenclature, {
+    through: {
+      model: () => Synonyms,
+      keyFrom: 'idParent',
+      keyTo: 'idSynonym',
+    }
+  })
+  subsynonymsNomenclatoric: Nomenclature[];
+
+  @hasMany(() => Nomenclature, {
+    through: {
+      model: () => Synonyms,
+      keyFrom: 'idSynonym',
+      keyTo: 'idParent',
+    },
+  })
+  acceptedNames: Nomenclature[];
+
+  @hasMany(() => Nomenclature, {keyTo: 'idBasionym'})
+  basionymFor: Nomenclature[];
+
+  @hasMany(() => Nomenclature, { keyTo: 'idNomenNovum' })
+  nomenNovumFor: Nomenclature[];
+
+  @hasMany(() => Nomenclature, { keyTo: 'idReplaced' })
+  replacedFor: Nomenclature[];
+
+  @hasMany(() => Nomenclature, { keyTo: 'idParentCombination' })
+  parentCombinationFor: Nomenclature[];
+
+  @hasMany(() => Nomenclature, { keyTo: 'idTaxonPosition' })
+  taxonPositionFor: Nomenclature[];
 
   constructor(data?: Partial<Nomenclature>) {
     super(data);

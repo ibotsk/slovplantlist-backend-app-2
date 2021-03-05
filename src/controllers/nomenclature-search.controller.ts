@@ -14,19 +14,13 @@ import {
   NomenclatureSearchResponse,
 } from './domain/nomenclature-search.domain';
 
+import { getNomenclatureSearchDefaultOrder } from './helpers';
+
 const nomenclatureSearchProperties = NomenclatureSearch.definition.properties;
 const searchInfraspecificFields = Object.keys(
   nomenclatureSearchProperties,
 ).filter((key) => nomenclatureSearchProperties[key].infraspecific);
-const searchDefaultOrder = Object.keys(
-  nomenclatureSearchProperties,
-).filter((key) => nomenclatureSearchProperties[key].defaultOrder);
 
-searchDefaultOrder.sort((a, b) => (
-  nomenclatureSearchProperties[a].defaultOrder
-    > nomenclatureSearchProperties[b].defaultOrder
-    ? 1 : -1
-));
 
 export class NomenclatureSearchController {
   constructor(
@@ -177,7 +171,7 @@ export class NomenclatureSearchController {
 
     const filter = fb
       .include('acceptedNames')
-      .order(searchDefaultOrder)
+      .order(getNomenclatureSearchDefaultOrder())
       .build();
 
     const data = await this.nomenclatureSearchRepository.find(filter);
