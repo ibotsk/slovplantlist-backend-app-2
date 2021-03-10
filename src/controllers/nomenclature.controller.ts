@@ -1,4 +1,5 @@
 import {
+  EntityNotFoundError,
   repository,
 } from '@loopback/repository';
 import {
@@ -33,6 +34,7 @@ export class NomenclatureController {
   async findById(
     @param.path.number('id') id: number,
   ): Promise<Nomenclature> {
+
     const fb = new FilterBuilder<Nomenclature>();
     const filter = fb
       .include('acceptedNames')
@@ -43,7 +45,13 @@ export class NomenclatureController {
       .include('parentCombination')
       .include('taxonPosition')
       .build();
-    return this.nomenclatureRepository.findById(id, filter);
+    
+    const result = await this.nomenclatureRepository.findById(id, filter);
+
+    if (!result.checkedTimestamp) {
+      throw new EntityNotFoundError('nomenclature', id);
+    }
+    return result;
   }
 
   @get('/nomenclatures/{id}/for-relations', {
