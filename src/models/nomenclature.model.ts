@@ -187,6 +187,13 @@ export class Nomenclature extends Entity {
   })
   subaggregate?: string;
 
+  @property({
+    type: 'string',
+    name: 'checked_timestamp',
+    hidden: true,
+  })
+  checkedTimestamp?: string;
+
   //----- realational properties ----- //
   @belongsTo(() => Genus, { name: 'genusReference' }, {
     name: 'id_genus',
