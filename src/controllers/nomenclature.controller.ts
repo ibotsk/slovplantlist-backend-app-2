@@ -22,7 +22,7 @@ export class NomenclatureController {
     public nomenclatureRepository: NomenclatureRepository,
   ) { }
 
-  @get('/nomenclatures/{id}')
+  @get('/names/{id}')
   @response(200, {
     description: 'Nomenclature model instance',
     content: {
@@ -55,7 +55,7 @@ export class NomenclatureController {
     return result;
   }
 
-  @get('/nomenclatures/{id}/for-relations', {
+  @get('/names/{id}/for-relations', {
     responses: {
       '200': {
         description: 'Names for which this name is a: basionym, nomen novum, replaced name, parent combination, taxon position',

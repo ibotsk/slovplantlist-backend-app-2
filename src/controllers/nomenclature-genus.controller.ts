@@ -18,7 +18,7 @@ export class NomenclatureGenusController {
     public nomenclatureRepository: NomenclatureRepository,
   ) { }
 
-  @get('/nomenclatures/{id}/genus', {
+  @get('/names/{id}/genus', {
     responses: {
       '200': {
         description: 'Genus belonging to Nomenclature',
