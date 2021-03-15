@@ -44,6 +44,7 @@ export class NomenclatureController {
       .include('replaced')
       .include('parentCombination')
       .include('taxonPosition')
+      .include('nomenStatus')
       .build();
     
     const result = await this.nomenclatureRepository.findById(id, filter);

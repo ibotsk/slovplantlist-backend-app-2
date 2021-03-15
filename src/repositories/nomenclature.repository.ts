@@ -1,17 +1,16 @@
 import { inject, Getter } from '@loopback/core';
 import {
   DefaultCrudRepository, repository,
-  BelongsToAccessor, HasManyThroughRepositoryFactory, HasManyRepositoryFactory
-} from '@loopback/repository';
+  BelongsToAccessor, HasManyThroughRepositoryFactory, HasManyRepositoryFactory, HasOneRepositoryFactory} from '@loopback/repository';
 import { SlovplantlistDataSource } from '../datasources';
 import {
-  Nomenclature, NomenclatureRelations, Genus, Synonyms,
-} from '../models';
+  Nomenclature, NomenclatureRelations, Genus, Synonyms, NomenStatus} from '../models';
 import { GenusRepository } from './genus.repository';
 import {
   SynonymsRepository,
   SynonymsOfSynonymsRepository,
 } from './synonyms.repository';
+import {NomenStatusRepository} from './nomen-status.repository';
 
 export class NomenclatureRepository extends DefaultCrudRepository<
   Nomenclature,
@@ -48,10 +47,13 @@ export class NomenclatureRepository extends DefaultCrudRepository<
 
   public readonly taxonPositionFor: HasManyRepositoryFactory<Nomenclature, typeof Nomenclature.prototype.id>;
 
+  public readonly nomenStatus: HasOneRepositoryFactory<NomenStatus, typeof Nomenclature.prototype.id>;
+
   constructor(
     @inject('datasources.slovplantlist') dataSource: SlovplantlistDataSource,
     @repository.getter('GenusRepository') protected genusRepositoryGetter: Getter<GenusRepository>,
     @repository.getter('SynonymsRepository') protected synonymsRepositoryGetter: Getter<SynonymsRepository>,
+    @repository.getter('NomenStatusRepository') protected nomenStatusRepositoryGetter: Getter<NomenStatusRepository>,
   ) {
     super(Nomenclature, dataSource);
     this.genusReference = this.createBelongsToAccessorFor('genusReference', genusRepositoryGetter);
@@ -83,15 +85,18 @@ export class NomenclatureRepository extends DefaultCrudRepository<
 
     this.nomenNovumFor = this.createHasManyRepositoryFactoryFor('nomenNovumFor', Getter.fromValue(this));
     this.registerInclusionResolver('nomenNovumFor', this.nomenNovumFor.inclusionResolver);
-
+    
     this.replacedFor = this.createHasManyRepositoryFactoryFor('replacedFor', Getter.fromValue(this));
     this.registerInclusionResolver('replacedFor', this.replacedFor.inclusionResolver);
-
+    
     this.parentCombinationFor = this.createHasManyRepositoryFactoryFor('parentCombinationFor', Getter.fromValue(this));
     this.registerInclusionResolver('parentCombinationFor', this.parentCombinationFor.inclusionResolver);
     
     this.taxonPositionFor = this.createHasManyRepositoryFactoryFor('taxonPositionFor', Getter.fromValue(this));
     this.registerInclusionResolver('taxonPositionFor', this.taxonPositionFor.inclusionResolver);
+
+    this.nomenStatus = this.createHasOneRepositoryFactoryFor('nomenStatus', nomenStatusRepositoryGetter);
+    this.registerInclusionResolver('nomenStatus', this.nomenStatus.inclusionResolver);
   }
 }
 
@@ -103,8 +108,8 @@ export class NomenclatureAsSynonymRepository extends DefaultCrudRepository<
   > {
 
   public readonly subsynonymsNomenclatoric: HasManyThroughRepositoryFactory<Nomenclature, typeof Nomenclature.prototype.id,
-    Synonyms,
-    typeof Nomenclature.prototype.id
+  Synonyms,
+  typeof Nomenclature.prototype.id
   >;
 
   constructor(
@@ -115,6 +120,6 @@ export class NomenclatureAsSynonymRepository extends DefaultCrudRepository<
 
     this.subsynonymsNomenclatoric = this.createHasManyThroughRepositoryFactoryFor(
       'subsynonymsNomenclatoric', Getter.fromValue(this), synonymsOfSynonymsRepositoryGetter);
-    this.registerInclusionResolver('subsynonymsNomenclatoric', this.subsynonymsNomenclatoric.inclusionResolver);
+      this.registerInclusionResolver('subsynonymsNomenclatoric', this.subsynonymsNomenclatoric.inclusionResolver);
   }
 }
