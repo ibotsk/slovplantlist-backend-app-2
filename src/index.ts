@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import fs from 'fs';
 import {ApplicationConfig, SlovplantlistBackendApp2Application} from './application';
 
 dotenv.config();
@@ -18,6 +19,9 @@ export async function main(options: ApplicationConfig = {}) {
 }
 
 if (require.main === module) {
+  const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
+  const sslKeyFile = process.env.SSL_KEY_FILE ?? '';
+  const sslCertFile = process.env.SSL_CRT_FILE ?? '';
   // Run the application
   const config = {
     rest: {
@@ -33,6 +37,10 @@ if (require.main === module) {
         // useful when used with OpenAPI-to-GraphQL to locate your application
         setServersFromRequest: true,
       },
+
+      protocol,
+      key: sslKeyFile ? fs.readFileSync(sslKeyFile) : undefined,
+      cert: sslCertFile ? fs.readFileSync(sslCertFile) : undefined,
     },
   };
   main(config).catch(err => {
