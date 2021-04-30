@@ -23,12 +23,7 @@ export class NomenStatus extends Entity {
   @property({
     type: 'string',
   })
-  allochthonous?: string;
-
-  @property({
-    type: 'string',
-  })
-  invasiveness?: string;
+  origin?: string;
 
   @property({
     type: 'string',
@@ -38,7 +33,13 @@ export class NomenStatus extends Entity {
   @property({
     type: 'string',
   })
-  protection?: string;
+  invasiveness?: string;
+
+  @property({
+    type: 'string',
+    name: 'residence_time',
+  })
+  residenceTime?: string;
 
   @property({
     type: 'string',
@@ -48,8 +49,18 @@ export class NomenStatus extends Entity {
   @property({
     type: 'string',
   })
-  doubtfullness?: string;
+  threat?: string;
 
+  @property({
+    type: 'string',
+  })
+  protection?: string;
+
+  @property({
+    type: 'string',
+    name: 'protection_legacy',
+  })
+  protectionLegacy?: string;
 
   constructor(data?: Partial<NomenStatus>) {
     super(data);
