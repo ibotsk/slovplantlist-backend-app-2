@@ -53,14 +53,15 @@ export class NomenStatus extends Entity {
 
   @property({
     type: 'string',
+    name: 'protection_prepared',
   })
-  protection?: string;
+  protectionPrepared?: string;
 
   @property({
     type: 'string',
-    name: 'protection_legacy',
+    name: 'protection_current',
   })
-  protectionLegacy?: string;
+  protectionCurrent?: string;
 
   constructor(data?: Partial<NomenStatus>) {
     super(data);
