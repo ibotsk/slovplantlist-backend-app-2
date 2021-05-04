@@ -1,8 +1,8 @@
 import {
-  Entity, model, property, belongsTo, hasMany,
-} from '@loopback/repository';
+  Entity, model, property, belongsTo, hasMany, hasOne} from '@loopback/repository';
 import { Genus } from './genus.model';
 import { Synonyms } from './synonyms.model';
+import {NomenStatus} from './nomen-status.model';
 
 @model({
   name: 'nomenclature',
@@ -263,9 +263,12 @@ export class Nomenclature extends Entity {
 
   @hasMany(() => Nomenclature, { keyTo: 'idParentCombination' })
   parentCombinationFor: Nomenclature[];
-
+ 
   @hasMany(() => Nomenclature, { keyTo: 'idTaxonPosition' })
   taxonPositionFor: Nomenclature[];
+
+  @hasOne(() => NomenStatus, {keyTo: 'idNomenclature'})
+  nomenStatus: NomenStatus;
 
   constructor(data?: Partial<Nomenclature>) {
     super(data);

@@ -45,7 +45,7 @@ export class NomenclatureSynonymsController {
     @repository(NomenclatureRepository) protected nomenclatureRepository: NomenclatureRepository,
   ) { }
 
-  @get('/nomenclatures/{id}/synonyms', {
+  @get('/names/{id}/synonyms', {
     responses: {
       '200': {
         description: 'Nomenclatoric, taxonomic and other synonyms',
@@ -92,7 +92,7 @@ export class NomenclatureSynonymsController {
     };
   }
 
-  @get('/nomenclatures/{id}/invalid-designations', {
+  @get('/names/{id}/invalid-designations', {
     responses: {
       '200': {
         description: 'Invalid designations',
@@ -113,7 +113,7 @@ export class NomenclatureSynonymsController {
     );
   }
 
-  @get('/nomenclatures/{id}/misidentifications', {
+  @get('/names/{id}/misidentifications', {
     responses: {
       '200': {
         description: 'Misidentifications',

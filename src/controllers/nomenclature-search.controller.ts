@@ -28,7 +28,7 @@ export class NomenclatureSearchController {
     public nomenclatureSearchRepository: NomenclatureSearchRepository,
   ) { }
 
-  @post('/nomenclature-search/scientific')
+  @post('/name-search/scientific')
   @response(200, {
     description: 'Array of NomenclatureSearch model instances',
     content: {
